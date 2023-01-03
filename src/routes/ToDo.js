@@ -126,5 +126,25 @@ router.post(
       return res.send(todo)
   })
 
+  router.get('/', async (req, res) => {
+    let user
+      jwt.verify(req.headers.authorization, 'KareemElshafey', function(err, decode) {
+        if (err) req.user = undefined;
+        user = decode;
+      });
+
+      if(!user){
+        return res.send('Invalid Token')
+      }
+      
+      const todo = await ToDo.find({userId: user._id})
+
+      if(!todo){
+        return res.send('ToDos not found')
+      }
+
+      return res.send(todo)
+  })
+
 
   module.exports = router;
